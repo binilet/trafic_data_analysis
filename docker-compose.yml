@@ -1,0 +1,42 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: your_password
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  airflow:
+    image: apache/airflow:latest
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/logs:/opt/airflow/logs
+      - ./airflow/plugins:/opt/airflow/plugins
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+
+  dbt:
+    build:
+      context: .
+      dockerfile: Dockerfile.dbt
+    volumes:
+      - ./dbt:/dbt
+    depends_on:
+      - postgres
+
+  redash:
+    image: redash/redash:latest
+    environment:
+      REDASH_HOST: http://localhost
+      POSTGRES_PASSWORD: your_password
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"

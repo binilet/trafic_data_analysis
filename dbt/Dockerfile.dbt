@@ -1,0 +1,10 @@
+FROM python:3.11-slim
+
+RUN apt-get update && app-get install -y \
+    git \
+    libpq-dev \
+    && rm -rf /var/lib/apt/list/*
+
+RUN pip install dbt-postgres
+
+WORKDIR /dbt
