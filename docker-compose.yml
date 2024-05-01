@@ -3,14 +3,14 @@ services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_PASSWORD: 123
     volumes:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
   airflow:
-    image: apache/airflow:latest
+    image: apache/airflow:2.3.3
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     volumes:
@@ -24,7 +24,7 @@ services:
 
   dbt:
     build:
-      context: .
+      context: ./dbt
       dockerfile: Dockerfile.dbt
     volumes:
       - ./dbt:/dbt
