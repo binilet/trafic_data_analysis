@@ -1,0 +1,8 @@
+profile:
+  target:
+    type: postgres
+    host: traffic_pg_db  # Docker service name for PostgreSQL
+    user: postgres
+    password: 123  # Replace with your PostgreSQL password
+    port: 5432
+    dbname: postgres

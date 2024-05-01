@@ -10,7 +10,7 @@ services:
       - "5432:5432"
 
   airflow:
-    image: apache/airflow:2.3.3
+    image: apache/airflow:latest
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     volumes:
