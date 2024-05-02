@@ -1,4 +1,3 @@
-version: '3'
 services:
   postgres:
     image: postgres:latest
@@ -8,19 +7,33 @@ services:
       - ./postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      retries: 5
 
   airflow:
     image: apache/airflow:latest
+    restart: always
     environment:
       AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://postgres:123@postgres/postgres
+      AIRFLOW__WEBSERVER__AUTHENTICATE: 'true'  # Enable authentication
+      AIRFLOW__WEBSERVER__AUTH_BACKEND: 'airflow.contrib.auth.backends.password_auth'
+      AIRFLOW__WEBSERVER__AUTH_USER_CREATION: 'true'  # Enable user creation
+      AIRFLOW__WEBSERVER__RBAC: 'true'  # Enable RBAC (Role-Based Access Control)
+      AIRFLOW__WEBSERVER__BASE_URL: 'http://localhost:8080'
     volumes:
       - ./airflow/dags:/opt/airflow/dags
       - ./airflow/logs:/opt/airflow/logs
       - ./airflow/plugins:/opt/airflow/plugins
-    depends_on:
-      - postgres
     ports:
       - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: ["bash", "-c", "airflow db init && airflow webserver"]
 
   dbt:
     build:
@@ -28,15 +41,21 @@ services:
       dockerfile: Dockerfile.dbt
     volumes:
       - ./dbt:/dbt
+      - ./dbt/dbt_project.yml:/dbt/dbt_project.yml
     depends_on:
-      - postgres
-
+      postgres:
+        condition: service_healthy
+      airflow:
+        condition: service_healthy
+    command: ["dbt", "run"]
+    
   redash:
     image: redash/redash:latest
     environment:
       REDASH_HOST: http://localhost
-      POSTGRES_PASSWORD: your_password
+      POSTGRES_PASSWORD: 123
     depends_on:
-      - postgres
+      postgres:
+        condition: service_healthy
     ports:
       - "5000:5000"

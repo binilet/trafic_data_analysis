@@ -8,7 +8,7 @@ WITH split_data AS (
         avg_speed,
         unnest(string_to_array(regexp_replace(data, '^[^;]+;[^;]+;[^;]+;[^;]+;', ''), ';')) AS location_data
     FROM
-        {{ ref('stg_traffic-data') }}
+        {{ ref('stg_traffic_data') }}
 )
 
 SELECT
