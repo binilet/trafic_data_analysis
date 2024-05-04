@@ -6,6 +6,6 @@ default:
       user: postgres # Default Postgres user
       password: '123' # The password you set for Postgres
       port: 5432 # Default Postgres port
-      dbname: postgres # Default Postgres database name
+      dbname: traffic_data_db # Default Postgres database name
       schema: public
   target: dev

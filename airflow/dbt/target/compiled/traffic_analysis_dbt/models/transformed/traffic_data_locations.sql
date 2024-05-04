@@ -1,4 +1,4 @@
-{{ config(materialized='table')}}
+
 
 WITH split_data AS (
     SELECT 
@@ -8,7 +8,7 @@ WITH split_data AS (
         avg_speed,
         unnest(string_to_array(regexp_replace(data, '^[^;]+;[^;]+;[^;]+;[^;]+;', ''), ';')) AS location_data
     FROM
-        {{ ref('stg_traffic_data') }}
+        "postgres"."public"."stg_traffic_data"
 )
 
 SELECT
@@ -25,4 +25,4 @@ SELECT
 FROM
     split_data
 WHERE
-    track_id in (SELECT track_id FROM {{ ref('traffic_data_general') }})
+    track_id in (SELECT track_id FROM "postgres"."public"."traffic_data_general")
