@@ -10,11 +10,11 @@ WITH split_data AS (
 
 SELECT
     track_id,
-    split_part(location_data, ' ', 1) AS lat,
-    split_part(location_data, ' ', 2) AS lon,
-    split_part(location_data, ' ', 3) AS speed,
-    split_part(location_data, ' ', 4) AS lon_acc,
-    split_part(location_data, ' ', 5) AS lat_acc,
-    split_part(location_data, ' ', 6) AS time
+    split_part(location_data, ';', 1) AS lat,
+    split_part(location_data, ';', 2) AS lon,
+    split_part(location_data, ';', 3) AS speed,
+    split_part(location_data, ';', 4) AS lon_acc,
+    split_part(location_data, ';', 5) AS lat_acc,
+    split_part(location_data, ';', 6) AS time
 FROM
     split_data

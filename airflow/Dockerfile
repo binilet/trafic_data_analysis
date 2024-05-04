@@ -10,6 +10,9 @@ RUN pip install dbt-postgres dbt-redshift
 # Copy the dbt project into the Docker image
 COPY dbt/ /app/dbt/
 
+# Change ownership to airflow user
+RUN sudo chown -R airflow /app/dbt
+
 # Copy the Airflow requirements into the Docker image
 COPY requirements.txt /app/requirements.txt
 

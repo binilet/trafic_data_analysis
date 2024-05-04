@@ -21,7 +21,7 @@ def create_staging_table():
         connection.execute(text(create_table_query))
 
 def load_csv_to_staging():
-    print('loading csv skipped for now; since it is already skipped')
+    print('loading csv skipped for now; since it is already loaded')
     # df = pd.read_csv('/data/20181024_d1_0830_0900.csv',header=None,names=['data'])
     # engine = create_engine('postgresql://postgres:123@postgres/traffic_data_db')
     # #load the dataframe into the staging table
