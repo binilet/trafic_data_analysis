@@ -27,17 +27,29 @@ services:
     depends_on:
       - postgres
 
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
   redash:
     image: redash/redash:latest
-    environment:
-      REDASH_HOST: http://localhost
-      REDASH_BACKEND_POSTGRESQL_URL: "postgresql://postgres:123@postgres/postgres"
     depends_on:
-      postgres:
-        condition: service_healthy
+      - postgres
+      - redis
     ports:
       - "5000:5000"
+    environment:
+      REDASH_HOST: http://localhost:5000
+      POSTGRES_PASSWORD: 123
+      REDASH_COOKIE_SECRET: '241234213423jdfhopsdjfsdfsf'
+      REDASH_SECRET_KEY: 'ljdfho234239pdusjdfhsd9f8odf'
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_BACKEND_POSTGRESQL_URL: postgresql+psycopg2://postgres:123@postgres:5433/postgres
 
 volumes:
   postgres-data:
   redash-data:
+  redis-data:

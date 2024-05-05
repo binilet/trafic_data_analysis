@@ -1,0 +1,13 @@
+version: 2
+
+models:
+  - name: traffic_data_general
+    tests:
+      - unique:
+          column_name: track_id
+      - not_null:
+          column_name: track_id
+      - dbt_expectations.expect_column_values_to_be_between:
+          column_name: avg_speed
+          min_value: 0
+          max_value: 200
